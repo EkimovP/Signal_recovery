@@ -5,14 +5,11 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # ШАБЛОНЫ ОТРИСОВКИ ГРАФИКОВ
 # Очистка и подпись графика (вызывается в начале)
-def cleaning_and_chart_graph(graph: Graph, x_label, y_label, title):
+def cleaning_and_chart_graph(graph: Graph, title):
     graph.toolbar.home()  # Возвращаем зум в домашнюю позицию
-    graph.toolbar.update()  # Очищаем стек осей (от старых x, y lim)
+    graph.toolbar.update()  # Очищаем стек осей
     # Очищаем график
     graph.axis.clear()
-    # Задаем название осей
-    graph.axis.set_xlabel(x_label)
-    graph.axis.set_ylabel(y_label)
     # Задаем название графика
     graph.axis.set_title(title)
 
@@ -37,11 +34,6 @@ def no_data(graph: Graph):
 
 # Класс художник. Имя холст (graph), рисует на нем данные
 class Drawer:
-    # ПАРАМЕТРЫ ГРАФИКОВ
-    # График №1 Данные
-    horizontal_axis_name_data = "X"
-    vertical_axis_name_data = "Y"
-
     # ОТРИСОВКИ
     # (1) Цветной двухмерный график
     @staticmethod
@@ -56,8 +48,6 @@ class Drawer:
             graph=graph,
             # Название графика
             title=graph.name_graphics,
-            # Подпись осей
-            x_label=Drawer.horizontal_axis_name_data, y_label=Drawer.vertical_axis_name_data
         )
 
         # Рисуем график
@@ -85,8 +75,6 @@ class Drawer:
             graph=graph,
             # Название графика
             title=graph.name_graphics,
-            # Подпись осей
-            x_label=Drawer.horizontal_axis_name_data, y_label=Drawer.vertical_axis_name_data
         )
 
         # Рисуем график
@@ -115,8 +103,6 @@ class Drawer:
             graph=graph,
             # Название графика
             title=graph.name_graphics,
-            # Подпись осей
-            x_label=Drawer.horizontal_axis_name_data, y_label=Drawer.vertical_axis_name_data
         )
 
         # Рисуем график

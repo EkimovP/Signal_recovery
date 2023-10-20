@@ -100,9 +100,9 @@
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>-632</y>
+           <y>-695</y>
            <width>181</width>
-           <height>1192</height>
+           <height>1255</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -239,7 +239,7 @@
                    <item>
                     <widget class="QLineEdit" name="lineEdit_amplitude_kernels">
                      <property name="text">
-                      <string>5</string>
+                      <string>32</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
@@ -315,7 +315,7 @@
                    <item>
                     <widget class="QLineEdit" name="lineEdit_sigma_x_kernels">
                      <property name="text">
-                      <string>10</string>
+                      <string>0.8</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
@@ -391,7 +391,7 @@
                    <item>
                     <widget class="QLineEdit" name="lineEdit_sigma_y_kernels">
                      <property name="text">
-                      <string>10</string>
+                      <string>0.8</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
@@ -1511,6 +1511,71 @@
                     <widget class="QLineEdit" name="lineEdit_number_iterations">
                      <property name="text">
                       <string>100</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_number_iterations_2">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="title">
+                <string>Параметр восстановления</string>
+               </property>
+               <layout class="QVBoxLayout" name="layout_area_size_10">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>5</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>9</number>
+                </property>
+                <item>
+                 <widget class="QWidget" name="widget_noise_9" native="true">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <layout class="QHBoxLayout" name="layout_width_area_10" stretch="1,1">
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_recovery_parameter">
+                     <property name="text">
+                      <string>Параметр ε:</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_recovery_parameter">
+                     <property name="text">
+                      <string/>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>

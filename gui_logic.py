@@ -98,6 +98,7 @@ class GuiProgram(Ui_Dialog):
         self.spectrum_core = None
         self.module_spectrum_repositioned_all = None
         self.blurred_image = None
+        self.convolution_image = None
         self.reconstructed_signal = None
 
         # ДЕЙСТВИЯ ПРИ ВКЛЮЧЕНИИ
@@ -319,17 +320,17 @@ class GuiProgram(Ui_Dialog):
         drawer.image_gray_2d(self.graph_1, self.module_spectrum_repositioned_all)
         self.graph_1.name_graphics = "График №1. Исходное изображение"
         # Отображаем изображение свертки
-        convolution_image = (np.fft.ifft2(self.spectrum_image * self.spectrum_core)).real
+        self.convolution_image = np.abs(np.fft.ifft2(self.blurred_image))
         self.graph_2.name_graphics = "График 6. Размытое изображение"
-        drawer.image_gray_2d(self.graph_2, convolution_image)
+        drawer.image_gray_2d(self.graph_2, self.convolution_image)
         self.graph_2.name_graphics = "График №2. Аппаратная функция"
 
     # (5) Добавляем шум к свертке
     def noise_convolution(self):
         # Нет исходны данных - сброс
-        if self.blurred_image is None:
+        if self.convolution_image is None:
             return
-        self.noise_image = self.blurred_image.copy()
+        self.noise_image = self.convolution_image.copy()
         # Считаем энергию изображения
         energy_pictures = 0
         for x in self.noise_image:
@@ -349,20 +350,14 @@ class GuiProgram(Ui_Dialog):
         # Запрашиваем процент шума
         noise_percentage = float(self.lineEdit_noise.text()) / 100
         # Считаем коэффициент/множитель шума
-        noise_coefficient = math.sqrt(noise_percentage * (energy_pictures.real / energy_noise))
-        print(noise_coefficient)
-        print(picture_noise)
+        noise_coefficient = math.sqrt(noise_percentage * (energy_pictures / energy_noise))
         # К пикселям изображения добавляем пиксель шума
         for x in range(width):
             for y in range(height):
                 self.noise_image[y, x] += int(noise_coefficient * picture_noise[y, x])
         # Отображаем итог
-        module_picture_spectrum_convolution = abs(self.noise_image)
-        module_picture_spectrum_convolution[0, 0] = 0
-        # Отображаем спектр свертки с шумом в центре
-        module_picture_spectrum_convolution = self.building_spectrum_in_the_center(module_picture_spectrum_convolution)
-        self.graph_2.name_graphics = "График 7. Свертка сигнала и фильтра c шумом"
-        drawer.image_gray_2d(self.graph_2, module_picture_spectrum_convolution)
+        self.graph_2.name_graphics = "График 6.1. Свертка сигнала и фильтра c шумом"
+        drawer.image_gray_2d(self.graph_2, self.noise_image)
         self.graph_2.name_graphics = "График №2. Аппаратная функция"
 
     # (6) Восстанавливаем исходное изображение
@@ -370,7 +365,7 @@ class GuiProgram(Ui_Dialog):
         num_iterations = int(self.lineEdit_number_iterations.text())  # Количество итераций
         epsilon_break = float(self.lineEdit_division.text())  # Порог для восстановления сигнала
         # Копируем спектр свертки
-        self.reconstructed_signal = self.noise_image.copy()
+        self.reconstructed_signal = np.fft.fft2(self.noise_image)
         # Шаг 1. Выполнить прямое ПФ аппаратной функции
         fft_kernel = np.fft.fft2(self.kernel_image)
         # Шаг 2. Выполнить прямое ПФ изображения
@@ -385,7 +380,6 @@ class GuiProgram(Ui_Dialog):
         list_of_zeroed_indices_j = []
         for i in range(result.shape[0]):
             for j in range(result.shape[1]):
-                # if fft_kernel[i, j].real == 0 and fft_kernel[i, j].imag == 0:
                 if (fft_kernel[i, j].real < epsilon_break and fft_kernel[i, j].imag < epsilon_break
                         and self.reconstructed_signal[i, j].real < epsilon_break
                         and self.reconstructed_signal[i, j].imag < epsilon_break):
@@ -397,7 +391,7 @@ class GuiProgram(Ui_Dialog):
         for _ in range(num_iterations):
             # Шаг 4. Выполняется обратное ПФ -> временная область
             # Только реальная часть
-            result_image = np.fft.ifft2(result)
+            result_image = np.fft.ifft2(result).real
             # Шаг 5. В восстановленном изображении зануляются отрицательные элементы
             result_image = np.maximum(result_image, 0)
             # Шаг 6. Выполняется прямое ПФ -> частотная область
@@ -408,10 +402,25 @@ class GuiProgram(Ui_Dialog):
                 result[list_of_zeroed_indices_i[i], list_of_zeroed_indices_j[i]] = \
                     fft_result_image[list_of_zeroed_indices_i[i], list_of_zeroed_indices_j[i]]
             # Шаг 8. Переход к шагу 4
+        result_real = np.fft.ifft2(result).real
+        recovery_factor = 0
+        height, width = self.original_picture.shape
+        for j in range(height):
+            for i in range(width):
+                recovery_factor += \
+                    (self.original_picture[j, i] - result_real[j, i]) * \
+                    (self.original_picture[j, i] - result_real[j, i])
+        # Считаем энергию оригинального изображения
+        energy_original_picture = 0
+        for picture_line in self.original_picture:
+            for pixel in picture_line:
+                energy_original_picture += pixel * pixel
+        recovery_factor /= energy_original_picture
+        self.lineEdit_recovery_parameter.setText(f'{recovery_factor:.6f}')
         # Отображаем восстановленный график
-        self.graph_3.name_graphics = "График №6. Восстановленное изображение"
+        self.graph_3.name_graphics = "График №7. Восстановленное изображение"
         # drawer.image_gray_2d(self.graph_3, np.abs(np.fft.ifft2(result)))
-        drawer.image_gray_2d(self.graph_3, np.fft.ifft2(result).real)
+        drawer.image_gray_2d(self.graph_3, result_real)
         self.graph_3.name_graphics = "График №3. Спектр исходного изображения"
         # Отображаем исходный график
         self.graph_4.name_graphics = "График №1. Исходное изображение"
