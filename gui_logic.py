@@ -419,7 +419,6 @@ class GuiProgram(Ui_Dialog):
         self.lineEdit_recovery_parameter.setText(f'{recovery_factor:.6f}')
         # Отображаем восстановленный график
         self.graph_3.name_graphics = "График №7. Восстановленное изображение"
-        # drawer.image_gray_2d(self.graph_3, np.abs(np.fft.ifft2(result)))
         drawer.image_gray_2d(self.graph_3, result_real)
         self.graph_3.name_graphics = "График №3. Спектр исходного изображения"
         # Отображаем исходный график
