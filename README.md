@@ -1,6 +1,6 @@
-### [Восстановление сигнала из свертки]()
+### [Восстановление сигнала из свертки](https://github.com/EkimovP/Signal_recovery)
 
-<img src=" " align="right" width=500>
+<img src="https://github.com/EkimovP/Signal_recovery/assets/125445428/237d15d6-f356-44f4-bded-58ebc4ced11d" align="right" width=500>
 
 Данный проект предназначен для исследования итерационного алгоритма восстановления.
 <br><br>
